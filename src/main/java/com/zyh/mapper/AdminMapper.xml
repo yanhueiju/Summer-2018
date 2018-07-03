@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper代理的开发规则： 1、namespace必须时候接口的全限定名 2、Statementid必须和接口的方法名称一致 3、接口方法的参数类型要和parameterType要一致 
+	4、接口方法的返回值类型要和resultType一致 -->
+<mapper namespace="com.zyh.mapper.AdminMapper">
+	
+	<!-- 编写一登录校验操作 -->
+	<insert id="addAdmin" parameterType="com.zyh.po.Admin">
+		insert into admin(admin_name, admin_password, admin_gender, admin_phone, admin_email, admin_role, admin_note, ctime)
+		values (#{admin_name}, #{admin_password}, #{admin_gender}, #{admin_phone}, #{admin_email}, #{admin_role}, #{admin_note}, #{ctime})
+	</insert>
+	
+	<select id="findAllAdmin" resultType="com.zyh.po.Admin">
+		select * from admin
+	</select>
+	
+	<select id="findAdminById" parameterType="String" resultType="com.zyh.po.Admin">
+		SELECT * FROM admin where admin_id = #{admin_id}
+	</select>
+	
+	<delete id="deleteAdminById" parameterType="int">
+		delete from admin where admin_id = #{admin_id}
+	</delete>
+	
+	<update id="updateAdmin" parameterType="com.zyh.po.Admin">
+		update admin set admin_name=#{admin_name}, admin_password=#{admin_password}, 
+		admin_gender=#{admin_gender}, admin_phone=#{admin_phone}, admin_email= #{admin_email},
+		admin_role= #{admin_role}, admin_note=#{admin_note}, ctime= #{ctime}
+		where admin_id=#{admin_id}
+	</update>
+	
+	<select id="fuzzyInfo" resultType="com.zyh.po.Admin">
+		SELECT * FROM admin where 1=1
+		<if test="#{likeName} !=''">
+			and admin_name like #{likeName}
+		</if>
+		<if test="#{begin} !=''">
+			and ctime &lt; #{end} and ctime &gt; #{begin}
+		</if>  
+	</select>
+	
+</mapper>

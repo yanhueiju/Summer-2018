@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper代理的开发规则： 1、namespace必须时候接口的全限定名 2、Statementid必须和接口的方法名称一致 3、接口方法的参数类型要和parameterType要一致 
+	4、接口方法的返回值类型要和resultType一致 -->
+<mapper namespace="com.zyh.mapper.TaxMapper">
+	
+	<!-- 编写一登录校验操作 -->
+	<insert id="addTax" parameterType="com.zyh.po.Tax">
+		insert into tax(title, createDate, userId, detail, ttype, status)
+		values(#{title}, #{createDate}, #{userId}, #{detail}, #{ttype}, #{status})
+	</insert>
+	
+	<select id="findAllTax" resultType="com.zyh.po.Tax">
+		select * from tax
+	</select>
+	
+	<select id="findTaxById" parameterType="String" resultType="com.zyh.po.Tax">
+		SELECT * FROM tax where id = #{id}
+	</select>
+	
+	<delete id="deleteTaxById" parameterType="int">
+		delete from tax where id = #{id}
+	</delete>
+	
+	<update id="updateTax" parameterType="com.zyh.po.Tax">
+		update tax set title=#{title}, ttype=#{ttype}, detail=#{detail}, userId=#{userId}
+		where id=#{id}
+	</update>
+	
+	<select id="fuzzyInfo" resultType="com.zyh.po.Tax">
+		SELECT * FROM tax where 1=1
+		<if test="info_category !='' and info_category !=null and info_category !='ALL'">
+			and ttype = #{info_category}
+		</if>
+		<if test="#{info_title} !='' and info_category !=null">
+			and title like #{info_title}
+		</if>
+		<if test="#{begin} !='' and info_category !=null">
+			and createDate &lt; #{end} and createDate &gt; #{begin}
+		</if>  
+	</select>
+	
+</mapper>

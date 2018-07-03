@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper代理的开发规则： 1、namespace必须时候接口的全限定名 2、Statementid必须和接口的方法名称一致 3、接口方法的参数类型要和parameterType要一致 
+	4、接口方法的返回值类型要和resultType一致 -->
+<mapper namespace="com.zyh.mapper.LoginMapper">
+	
+	<!-- 编写一登录校验操作 -->
+	<select id="login" parameterType="java.util.HashMap" resultType="user">
+		select * from user where username = #{username} and password = #{password}
+	</select>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper代理的开发规则： 1、namespace必须时候接口的全限定名 2、Statementid必须和接口的方法名称一致 3、接口方法的参数类型要和parameterType要一致 
+	4、接口方法的返回值类型要和resultType一致 -->
+<mapper namespace="com.zyh.mapper.UserMapper">
+	<!-- 新增的sql -->
+	<insert id="insertUser" parameterType="com.zyh.po.User">
+		insert into user(username,birthday,sex,address)values(
+			#{username},#{birthday},#{sex},#{address}
+		)
+	</insert>
+
+	<!--  查询所有用户信息 -->
+	<select id="findAllUsers" resultType="com.zyh.po.User">
+		select * from user
+	</select>
+
+	<select id="findByName" parameterType="string"
+		resultType="com.zyh.po.User">
+		select * from user where username = #{userName}
+	</select>
+
+	<select id="findByParams" parameterType="com.zyh.po.User"
+		resultType="com.zyh.po.User">
+		select * from user where username = #{username} and sex = #{sex}
+	</select>
+	
+	<!--  mybatis框架支持Sql片段 -->
+	<sql id="findUser_condition">
+		<where>
+			<!-- 写所有的动态查询条件  -->
+			<if test="username_like != null and username_like != ''">
+				and username like #{username_like}
+			</if>
+			<if test="sex_equal != null and sex_equal != ''">
+				and sex = #{sex_equal}
+			</if>
+			<if test="birthday_begin != null">
+				and <![CDATA[birthday >= #{birthday_begin}]]>
+			</if>
+			<if test="birthday_end != null">
+				<!-- 如果使用符号与 xml中语法符号冲突，则需要添加一个格式化的 标签 -->
+				and <![CDATA[birthday <= #{birthday_end}]]>	
+			</if>
+			<if test="address_like != null and address_like != ''">
+				and address like #{address_like}
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 根据多个条件可选择的 查询 
+		驼峰命名法： 1、定义变量或方法的名称，要符合这个变量或方法的作用  
+				 2、变量或方法名如果由多个单词组成，则第一个单词的首字母小写，其他单词的首字母大写
+	-->
+	<select id="findListByParam" parameterType="com.zyh.po.UserParam" resultType="user">
+		select * from user
+		<include refid="findUser_condition"></include>
+	</select>
+	<!-- 统计上述查询条件相同的 查询结果的总数据量 -->
+	<select id="findListByParamCount" parameterType="com.zyh.po.UserParam" resultType="int">
+		select count(*) from user
+		<include refid="findUser_condition"></include>
+	</select>
+	
+</mapper>

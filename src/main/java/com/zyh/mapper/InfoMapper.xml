@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper代理的开发规则： 1、namespace必须时候接口的全限定名 2、Statementid必须和接口的方法名称一致 3、接口方法的参数类型要和parameterType要一致 
+	4、接口方法的返回值类型要和resultType一致 -->
+<mapper namespace="com.zyh.mapper.InfoMapper">
+	
+	<!-- 编写一登录校验操作 -->
+	<insert id="addInfo" parameterType="com.zyh.po.Info">
+		insert into info(info_title, info_category, info_detail, info_status, info_time)
+		values (#{info_title},#{info_category},#{info_detail},#{info_status},#{info_time})
+	</insert>
+	
+	<select id="findAllInfo" resultType="com.zyh.po.Info">
+		select * from info
+	</select>
+	
+	<select id="findInfoById" parameterType="String" resultType="com.zyh.po.Info">
+		SELECT * FROM info where info_id = #{info_id}
+	</select>
+	
+	<select id="fuzzyInfo" resultType="com.zyh.po.Info">
+		SELECT * FROM info where 1=1
+		<if test="info_category !='' and info_category !='ALL'">
+			and info_category = #{info_category}
+		</if>
+		<if test="#{info_title} !=''">
+			and info_title like #{info_title}
+		</if>
+		<if test="#{begin} !=''">
+			and info_time &lt; #{end} and info_time &gt; #{begin}
+		</if>  
+	</select>
+	
+	<update id="updateInfo" parameterType="com.zyh.po.Info">
+		update info set info_title=#{info_title}, info_category=#{info_category}, info_detail=#{info_detail}
+		where info_id=#{info_id}
+	</update>
+	
+	<delete id="deleteInfoById" parameterType="int">
+		delete from info where info_id = #{info_id}
+	</delete>
+	
+</mapper>
